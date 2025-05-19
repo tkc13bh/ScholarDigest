@@ -1,43 +1,85 @@
-# ScholarDigest: Automated Literature Summarizer for Retinal and Skin Blood Flow Research
+[日本語版Readmeはこちら](https://github.com/tkc13bh/ScholarDigest/blob/main/README-ja.md)
 
-This Google Apps Script automatically fetches scholarly articles related to retinal and skin blood flow from Google Scholar via SerpAPI, summarizes them using OpenAI's GPT model, and sends the results via email.
+# ScholarDigest: Automated Literature Summarizer and Zotero Archiver
 
-> ⚠️ This script is a slightly customized version based on the original example at:
-> [https://platform.openai.com/docs/guides/community/openai-and-google-apps-script](https://ict4d.jp/2024/09/25/ai-scholar/)
+ScholarDigest is a Google Apps Script tool that automates the process of searching academic papers using Google Scholar (via SerpAPI), summarizing them with OpenAI's GPT model, storing them in Zotero, and delivering the summaries via email.
 
+> ⚠️ This script is a customized version based on the community example at:  
+> [https://ict4d.jp/2024/09/25/ai-scholar/](https://ict4d.jp/2024/09/25/ai-scholar/)
+
+---
 
 ## ✨ Features
 
-- Keyword-based search using SerpAPI (Google Scholar engine)
-- Article summarization using `gpt-3.5-turbo`
-- Clean output: title, author/journal, link, and bullet-point summary
-- Daily scheduled execution (e.g., every day at 8 PM)
-- Token usage logging per API call
+- 🔍 **Flexible keyword-based academic search** using [SerpAPI](https://serpapi.com/)
+- 🤖 **Automated summarization** using `gpt-3.5-turbo` (OpenAI)
+- 📨 **Email report** including title, authors/journal, link, and bullet-point summary
+- 📚 **Zotero integration**:
+  - Adds new articles to a specific collection
+  - Skips duplicates by checking existing item URLs
+  - Attaches summary as a note to the Zotero item
+- 🔁 **Scheduled execution** via time-based triggers
+- 📊 **Logs token usage** for monitoring OpenAI API consumption
+
+---
 
 ## 🔧 Setup
 
-1. **Clone or paste the script into Google Apps Script.**
-2. **Set script properties** (`File → Project Properties → Script Properties`):
+### 1. Clone the Script
 
-| Key               | Description                        |
-|------------------|------------------------------------|
-| `SERP_API_KEY`    | Your SerpAPI key                   |
-| `OPENAI_API_KEY`  | Your OpenAI API key                |
-| `EMAIL_RECIPIENT` | Email address to send results to   |
+Paste the code into [Google Apps Script](https://script.google.com).
 
-3. **(Optional) Set a time-driven trigger:**
-   - Run `main()` once a day (e.g., 20:00 JST)
+### 2. Configure Script Properties
 
-## 📦 Example Output (Email)
+Go to `File → Project Properties → Script Properties`, and add the following keys:
 
-Title: Retinal blood flow in patients with type 2 diabetes
-Authors/Journal: Smith et al., Diabetologia (2021)
-Link: https://example.com/article1
-Summary:
+| Key                   | Description                            |
+|----------------------|----------------------------------------|
+| `SERP_API_KEY`        | Your [SerpAPI](https://serpapi.com/) key |
+| `OPENAI_API_KEY`      | Your [OpenAI](https://platform.openai.com/) API key |
+| `EMAIL_RECIPIENT`     | Email address to send the digest       |
+| `ZOTERO_API_KEY`      | Your [Zotero](https://www.zotero.org/settings/keys) API key |
+| `ZOTERO_USER_ID`      | Your Zotero user ID (numeric)          |
+| `ZOTERO_COLLECTION_KEY` | Zotero collection key to store articles |
 
-Retinal blood flow is reduced in type 2 diabetes.
+### 3. Customize Your Keywords
 
-Correlates with disease duration and HbA1c.
+In the `runScholarDigest()` function, modify the following line:
 
-Non-invasive measurement may help monitor progression.
+```javascript
+const keywords = ["your", "search", "keywords"];
+```
+You can write queries like:
 
+```
+["machine learning", "bioinformatics"]
+// becomes: "machine learning OR bioinformatics"
+```
+
+## 🕒 Example: Set Up Daily Automation
+Go to Triggers → Add Trigger, and configure:
+
+Function: runScholarDigest
+
+Event Type: Time-driven
+
+e.g., Run once a day at 20:00 JST
+
+## 📧 Example Email Output
+```
+タイトル: Advances in Bioinformatics
+著者・雑誌: Tanaka et al., Nature (2023)
+リンク: https://example.com/bioinfo123
+
+要約:
+- Describes a new deep learning model for gene sequence alignment.
+- Outperforms traditional methods in accuracy and speed.
+- Potential for clinical application in genome diagnostics.
+```
+
+## 🧠 Tips
+No hardcoded keywords – just update the keywords array to target any research domain.
+
+Zotero duplicates are detected via article URL comparison.
+
+You can enhance it to extract DOIs or add PDF download integration.

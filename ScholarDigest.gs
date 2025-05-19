@@ -1,6 +1,7 @@
 function runScholarDigest() {
   const config = getConfig();
-  const query = ["retinal blood flow", "skin blood flow"].join(" OR ");
+  // You can write queries
+  const query = ["machine learning", "bioinformatics", "your", "search", "keywords"].join(" OR ");
 
   const papers = searchScholar(query, config.SERP_API_KEY);
   if (papers.length === 0) {
